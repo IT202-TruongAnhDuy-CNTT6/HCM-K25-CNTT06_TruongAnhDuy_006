@@ -83,23 +83,21 @@ SELECT borrow_id, full_name, title, borrow_date
 FROM Borrows br, Users u, Books bk
 WHERE u.user_id = br.user_id AND bk.book_id = br.book_id AND `status` = 'Borrowing';
 SELECT category_name, title
-FROM Categories c, Books bk
-WHERE c.category_id = bk.category_id
-GROUP BY category_name; -- sai
+FROM Categories c
+LEFT JOIN Books bk
+ON c.category_id = bk.category_id;
 SELECT `status`, COUNT(borrow_id) AS 'Total_Borrows'
 FROM Borrows
 GROUP BY `status`; 
 SELECT full_name, COUNT(borrow_id) AS 'Total_Books_Borrown'
-FROM Users u, Borrows br
-WHERE u.user_id = br.user_id AND COUNT(borrow_id) >= 2; -- sai
+FROM Users u
+INNER JOIN Borrows br
+ON u.user_id = br.user_id
+GROUP BY u.full_name
+HAVING COUNT(borrow_id) >= 2;
 SELECT book_id, title, price
 FROM Books
 WHERE price < (
 	SELECT AVG(price)
     FROM Books
-);
-SELECT full_name, phone
-FROM Borrows
-WHERE  IN (
-	SELECT 
 );
